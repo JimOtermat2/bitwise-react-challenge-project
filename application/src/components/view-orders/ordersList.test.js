@@ -55,4 +55,38 @@ describe('Orders List', () => {
         expect(screen.getByText(/^.*888.*$/gm)).toBeInTheDocument();
 
     });
+
+    test('renders minutes and seconds as two digits', () => {
+		const exactHour = new Date(2022, 8, 6, 10);
+		const singleMinute = new Date(2022, 8, 6, 10, 5, 0);
+		const singleSecond = new Date(2022, 8, 6, 10, 0, 3);
+		const orders = [
+			{
+				order_item: "Taco",
+				quantity: "12",
+				createdAt: exactHour,
+				_id: 1
+			},
+			{
+				order_item: "Burrito",
+				quantity: "5",
+				createdAt: singleMinute,
+				_id: 2
+			},
+			{
+				order_item: "Quesadilla",
+				quantity: "3",
+				createdAt: singleSecond,
+				_id: 3
+			},
+		];
+		render(
+			<OrdersList
+				orders={orders}
+			/>
+		)
+		expect(screen.getByText(/^.*10:00:00.*/gm)).toBeInTheDocument();
+		expect(screen.getByText(/^.*10:05:00.*/gm)).toBeInTheDocument();
+		expect(screen.getByText(/^.*10:00:03.*/gm)).toBeInTheDocument();
+	});
 })
