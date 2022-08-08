@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'; 
 import { loginUser } from '../../../redux/actions/authActions'
+import store from '../../../redux/store';
 
 const mapActionsToProps = dispatch => ({
   commenceLogin(email, password) {
@@ -17,7 +18,14 @@ class LoginForm extends Component {
   login(e) {
     e.preventDefault();
     this.props.commenceLogin(this.state.email, this.state.password);
-    this.props.onLogin();
+    // don't fire onLogin immediately, because the login flow hasn't finished yet
+
+    store.subscribe(() => {
+      const newState = store.getState();
+      if (newState.auth.token != null) {
+        this.props.onLogin();
+      }
+    })
   }
 
   onChange(key, val) {
